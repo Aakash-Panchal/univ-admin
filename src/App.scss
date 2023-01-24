@@ -74,11 +74,30 @@ body {
       text-decoration: none;
       border-radius: 8px;
       color: #101010;
+      transition: 0.3s all ease-in-out;
       svg {
         margin-right: 1rem;
         font-size: 1.3rem;
       }
+      &:hover {
+        background: #10101024;
+      }
     }
+  }
+}
+
+//Header
+
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 60px;
+  border-bottom: 1px solid rgba(76, 78, 100, 0.12);
+  p {
+    font-size: 1.2rem;
   }
 }
 
@@ -87,5 +106,5 @@ body {
 }
 
 .container {
-  padding: 1rem;
+  width: 100%;
 }

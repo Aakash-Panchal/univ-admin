@@ -1,12 +1,12 @@
 import React from "react";
 import Header from "../Header";
 
-const SponsorPage = () => {
+const Teams = () => {
   return (
     <div className="container">
-      <Header title="Sponsors" />
+      <Header title="Team" />
     </div>
   );
 };
 
-export default SponsorPage;
+export default Teams;
