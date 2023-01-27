@@ -25,7 +25,6 @@ const Login = () => {
 
   const login = (event) => {
     event.preventDefault();
-    alert("hello");
   };
 
   return (

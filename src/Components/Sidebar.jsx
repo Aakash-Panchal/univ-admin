@@ -4,6 +4,7 @@ import logo from "../Univlogo.png";
 import { RxDoubleArrowLeft, RxExit } from "react-icons/rx";
 import { BiBadgeCheck } from "react-icons/bi";
 import { RiHome3Line } from "react-icons/ri";
+import { AiOutlineTeam } from "react-icons/ai";
 
 const Sidebar = () => {
   return (
@@ -18,17 +19,17 @@ const Sidebar = () => {
       </div>
       <div className="sidebar_content">
         <div className="sidebar_menu_links">
-          <NavLink to="/">
+          {/* <NavLink to="/">
             <RiHome3Line />
             Dashboard
-          </NavLink>
+          </NavLink> */}
           <NavLink to="/sponsor">
             <BiBadgeCheck />
-            Sponsor
+            <p>Sponsor</p>
           </NavLink>
           <NavLink to="/team">
-            <BiBadgeCheck />
-            Teams
+            <AiOutlineTeam />
+            <p>Teams</p>
           </NavLink>
         </div>
         <div className="logout_btn">
