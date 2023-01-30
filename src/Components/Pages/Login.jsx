@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import logo from "../../Univlogo.png";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import axios from "axios";
+import { BaseUrl } from "../../BaseUrl";
 
-const Login = () => {
-  const [values, setValues] = useState({ username: "", password: "" });
+const Login = ({ verify, toastOptions, toast }) => {
+  const [values, setValues] = useState({ userName: "", password: "" });
   const [passwordType, setPasswordType] = useState("password");
   const [passwordInput, setPasswordInput] = useState("");
 
@@ -25,6 +27,19 @@ const Login = () => {
 
   const login = (event) => {
     event.preventDefault();
+
+    axios({
+      method: "POST",
+      data: values,
+      url: BaseUrl + "admin/login",
+    })
+      .then((response) => {
+        toast.success("Done", toastOptions);
+        localStorage.setItem("Univ-Admin-username", values.userName);
+        localStorage.setItem("Univ-Admin-password", values.password);
+        verify();
+      })
+      .catch((response) => {});
   };
 
   return (
@@ -37,7 +52,7 @@ const Login = () => {
           <form onSubmit={login}>
             <input
               type="text"
-              name="username"
+              name="userName"
               onChange={handleChange}
               min="3"
               placeholder="Username"

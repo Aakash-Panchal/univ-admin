@@ -54,6 +54,8 @@ body {
   min-width: 300px;
   padding: 1rem;
   border-right: 1px solid rgba(76, 78, 100, 0.12);
+  transition: 0.5s;
+  transition-property: width;
   .sidebar_header {
     display: flex;
     align-items: center;
@@ -66,6 +68,7 @@ body {
       }
     }
     .sidebar_btn {
+      display: none;
       svg {
         font-size: 2rem;
       }
@@ -122,14 +125,17 @@ body {
   }
   @media (max-width: 1024px) {
     padding: 0.5rem;
-    width: 100px;
+    width: 90px;
     min-width: auto;
     overflow: hidden;
-
     .sidebar_header {
       justify-content: center;
       .sidebar_logo {
         display: none;
+      }
+      .sidebar_btn {
+        display: block;
+        cursor: pointer;
       }
     }
     .sidebar_content {
@@ -144,9 +150,69 @@ body {
           }
         }
       }
+      .logout_btn {
+        svg {
+          margin-right: 0;
+          font-size: 2rem;
+        }
+        p {
+          display: none;
+        }
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    padding: 0.3rem;
+    width: 80px;
+    .sidebar_header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 8%;
+      .sidebar_btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        svg {
+          font-size: 2rem;
+        }
+      }
+    }
+    .sidebar_content {
+      .sidebar_menu_links {
+        margin: 0;
+        a {
+          margin: 0.3rem 0;
+          svg {
+            font-size: 1.5rem;
+          }
+        }
+      }
     }
   }
 }
+
+// .active_sidebar {
+//   position: absolute;
+//   z-index: 9999999;
+//   width: 70%;
+//   background-color: #fff;
+//   transform: translateX(0);
+//   .sidebar_content {
+//     .sidebar_menu_links {
+//       a {
+//         font-size: 1rem;
+//         svg {
+//           margin-right: 1rem;
+//         }
+//         p {
+//           display: block;
+//         }
+//       }
+//     }
+//   }
+// }
 
 //Header
 
@@ -350,6 +416,51 @@ body {
             cursor: pointer;
           }
         }
+      }
+    }
+  }
+  @media (max-width: 1024px) {
+    overflow: hidden;
+    .content {
+      font-size: 1rem;
+      .list_item {
+        width: 100%;
+      }
+      .edit_menu {
+        display: block;
+        position: absolute;
+        width: 100%;
+        background-color: #fff;
+        transform: translateX(100%);
+        transition: all 0.6s;
+        form {
+          .inputs {
+            margin: 0.2rem 0;
+            label {
+              font-size: 1rem;
+            }
+            input {
+              font-size: 1rem;
+              padding: 0.5rem;
+            }
+          }
+        }
+        .phone_btn_input {
+          display: flex;
+          flex-direction: row;
+          button {
+            padding: 1rem;
+            background-color: #7264d5;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+          }
+        }
+      }
+      .edit_menu_active {
+        transform: translateX(0%);
       }
     }
   }

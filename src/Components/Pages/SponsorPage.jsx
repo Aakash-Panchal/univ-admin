@@ -11,6 +11,7 @@ const SponsorPage = ({ toastOptions, toast }) => {
   const [sponsors, setSponsors] = useState([]);
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showEditMenu, setShowEditMenu] = useState(false);
 
   const getSponsor = () => {
     axios({
@@ -29,55 +30,91 @@ const SponsorPage = ({ toastOptions, toast }) => {
 
   const addSponsor = (e) => {
     e.preventDefault();
+    setLoading(true);
     let formData = new FormData(e.target);
 
     axios({
       method: "POST",
       data: formData,
       url: BaseUrl + "sponsor",
-
-      withCredentials: true,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
     })
       .then((response) => {
         getSponsor();
+        setLoading(false);
         toast.success("Done", toastOptions);
         document.getElementById("add").reset();
       })
-      .catch((response) => {});
-  };
-
-  const deleteSponsor = (name) => {
-    axios({
-      method: "DELETE",
-      url: BaseUrl + `sponsor",${name}`,
-      withCredentials: true,
-    })
-      .then((response) => {
-        getSponsor();
-        toast.success("Deleted", toastOptions);
-      })
-      .catch((response) => {});
+      .catch((response) => {
+        setLoading(false);
+      });
   };
 
   const editsponsors = (e) => {
-    loading(true);
     e.preventDefault();
+
+    setLoading(true);
+
+    const id = sponsors[selected].id;
     let formData = new FormData(e.target);
+
+    if (formData.get("image").size === 0) {
+      formData.delete("image");
+    }
 
     axios({
       method: "PUT",
       data: formData,
-      url: BaseUrl + "sponsor",
-      withCredentials: true,
+      url: BaseUrl + `sponsor`,
+      params: {
+        id: id,
+      },
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
     })
       .then((response) => {
-        loading(false);
         setIsUpdating(false);
+        setShowEditMenu(false);
         getSponsor();
+        setLoading(false);
       })
       .catch((response) => {
-        loading(false);
+        setLoading(false);
       });
+  };
+
+  const deleteSponsor = (id) => {
+    setLoading(true);
+
+    axios({
+      method: "DELETE",
+      url: BaseUrl + `sponsor`,
+      headers: {
+        username: "kushal",
+        password: "123",
+      },
+      params: {
+        id: id,
+      },
+    })
+      .then((response) => {
+        getSponsor();
+        setLoading(false);
+        toast.success("Deleted", toastOptions);
+      })
+      .catch((response) => {
+        setLoading(false);
+        console.log(response);
+      });
+  };
+
+  const ShowEditMenu = () => {
+    showEditMenu ? setShowEditMenu(false) : setShowEditMenu(true);
   };
 
   return (
@@ -101,6 +138,7 @@ const SponsorPage = ({ toastOptions, toast }) => {
                 <div className="item_edit">
                   <BiEdit
                     onClick={() => {
+                      ShowEditMenu();
                       setIsUpdating(true);
                       setSelected(index);
                       setTimeout(() => {
@@ -112,7 +150,7 @@ const SponsorPage = ({ toastOptions, toast }) => {
                 <div className="item_delete">
                   <MdDelete
                     onClick={() => {
-                      deleteSponsor(item.name);
+                      deleteSponsor(item.id);
                     }}
                   />
                 </div>
@@ -122,7 +160,7 @@ const SponsorPage = ({ toastOptions, toast }) => {
         </div>
 
         <div
-          className="edit_menu"
+          className={showEditMenu ? "edit_menu edit_menu_active" : "edit_menu"}
           style={{
             display: !isUpdating ? "" : "none",
           }}
@@ -151,8 +189,9 @@ const SponsorPage = ({ toastOptions, toast }) => {
               <label>Sponsor Link</label>
               <input type="text" name="link" />
             </div>
-            <div className="inputs">
+            <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
               <button type="submit">Add</button>
+              {showEditMenu && <button onClick={ShowEditMenu}>Close</button>}
             </div>
           </form>
         </div>
@@ -195,7 +234,7 @@ const SponsorPage = ({ toastOptions, toast }) => {
                 />
               </div>
               <div className="inputs">
-                <button type="submit">Add</button>
+                <button type="submit">Update</button>
               </div>
             </form>
           </div>

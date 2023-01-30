@@ -1,39 +1,56 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../Univlogo.png";
-import { RxDoubleArrowLeft, RxExit } from "react-icons/rx";
+import { RxDoubleArrowLeft, RxExit, RxDoubleArrowRight } from "react-icons/rx";
 import { BiBadgeCheck } from "react-icons/bi";
 import { RiHome3Line } from "react-icons/ri";
 import { AiOutlineTeam } from "react-icons/ai";
 
-const Sidebar = () => {
+const Sidebar = ({ verify, setLogggedIn, toastOptions, toast }) => {
+  const [activeNav, setActiveNav] = useState(false);
+
+  const MenuBtn = () => {
+    activeNav ? setActiveNav(false) : setActiveNav(true);
+  };
+
+  const logOut = () => {
+    localStorage.clear();
+    setLogggedIn(false);
+    toast.success("Done", toastOptions);
+    verify();
+  };
+
   return (
-    <div className="sidebar">
+    <div className={activeNav ? "sidebar active_sidebar" : "sidebar"}>
       <div className="sidebar_header">
         <div className="sidebar_logo">
           <img src={logo} alt="logo" />
         </div>
-        <div className="sidebar_btn">
-          <RxDoubleArrowLeft />
+        <div className="sidebar_btn" onClick={MenuBtn}>
+          {activeNav ? <RxDoubleArrowLeft /> : <RxDoubleArrowRight />}
         </div>
       </div>
       <div className="sidebar_content">
         <div className="sidebar_menu_links">
-          {/* <NavLink to="/">
+          <NavLink to="/">
             <RiHome3Line />
-            Dashboard
-          </NavLink> */}
+            <p>Dashboard</p>
+          </NavLink>
           <NavLink to="/sponsor">
             <BiBadgeCheck />
             <p>Sponsor</p>
+          </NavLink>
+          <NavLink to="/expertise">
+            <AiOutlineTeam />
+            <p>Expertise</p>
           </NavLink>
           <NavLink to="/team">
             <AiOutlineTeam />
             <p>Teams</p>
           </NavLink>
         </div>
-        <div className="logout_btn">
-          <RxExit /> Logout
+        <div className="logout_btn" onClick={logOut}>
+          <RxExit /> <p>Logout</p>
         </div>
       </div>
     </div>
