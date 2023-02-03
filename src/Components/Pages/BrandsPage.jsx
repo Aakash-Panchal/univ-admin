@@ -7,30 +7,28 @@ import Loader from "../Loader";
 import { BaseUrl } from "../../BaseUrl";
 import AddBtn from "../AddBtn";
 
-const SponsorPage = ({ toastOptions, toast }) => {
+const BrandsPage = ({ toast, toastOptions }) => {
   const [loading, setLoading] = useState(true);
-  const [sponsors, setSponsors] = useState([]);
+  const [Brands, setBrands] = useState([]);
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
 
-  const [phoneMenu, setPhoneMenu] = useState(false);
-
-  const getSponsor = () => {
+  const getBrands = () => {
     axios({
       method: "GET",
-      url: BaseUrl + "sponsor",
+      url: BaseUrl + "brand",
     }).then((response) => {
-      setSponsors(response.data);
+      setBrands(response.data);
       setLoading(false);
     });
   };
 
   useEffect(() => {
-    getSponsor();
+    getBrands();
   }, []);
 
-  const addSponsor = (e) => {
+  const addBrand = (e) => {
     e.preventDefault();
     setLoading(true);
     let formData = new FormData(e.target);
@@ -38,16 +36,16 @@ const SponsorPage = ({ toastOptions, toast }) => {
     axios({
       method: "POST",
       data: formData,
-      url: BaseUrl + "sponsor",
+      url: BaseUrl + "brand",
       headers: {
         username: localStorage.getItem("Univ-Admin-username"),
         password: localStorage.getItem("Univ-Admin-password"),
       },
     })
       .then((response) => {
-        getSponsor();
+        getBrands();
         setLoading(false);
-        toast.success("Sponsor Added", toastOptions);
+        toast.success("Brand Added", toastOptions);
         document.getElementById("add").reset();
       })
       .catch((response) => {
@@ -55,20 +53,19 @@ const SponsorPage = ({ toastOptions, toast }) => {
       });
   };
 
-  const editsponsors = (e) => {
+  const editBrand = (e) => {
     e.preventDefault();
     setLoading(true);
-    const id = sponsors[selected].id;
+    const id = Brands[selected].id;
     let formData = new FormData(e.target);
 
     if (formData.get("image").size === 0) {
       formData.delete("image");
     }
-
     axios({
       method: "PUT",
       data: formData,
-      url: BaseUrl + `sponsor`,
+      url: BaseUrl + `brand`,
       params: {
         id: id,
       },
@@ -80,21 +77,19 @@ const SponsorPage = ({ toastOptions, toast }) => {
       .then((response) => {
         setIsUpdating(false);
         setShowEditMenu(false);
-        getSponsor();
+        getBrands();
         setLoading(false);
-        toast.success("Sponsor Updated", toastOptions);
       })
       .catch((response) => {
         setLoading(false);
       });
   };
 
-  const deleteSponsor = (id) => {
+  const deleteBrand = (id) => {
     setLoading(true);
-
     axios({
       method: "DELETE",
-      url: BaseUrl + `sponsor`,
+      url: BaseUrl + `brand`,
       headers: {
         username: localStorage.getItem("Univ-Admin-username"),
         password: localStorage.getItem("Univ-Admin-password"),
@@ -104,48 +99,35 @@ const SponsorPage = ({ toastOptions, toast }) => {
       },
     })
       .then((response) => {
-        getSponsor();
+        getBrands();
         setLoading(false);
-        toast.success("Sponsor Deleted", toastOptions);
+        toast.success("Deleted", toastOptions);
       })
       .catch((response) => {
         setLoading(false);
       });
   };
 
-  const ShowEditMenu = () => {
-    showEditMenu ? setShowEditMenu(false) : setShowEditMenu(true);
-  };
-
-  const showPhoneMenu = () => {
-    phoneMenu ? setPhoneMenu(false) : setPhoneMenu(true);
-  };
-
   return (
     <div className="container">
       <Loader loading={loading} />
-      <Header title="Sponsors" />
-      {/* {isUpdating && ( */}
-      <AddBtn showPhoneMenu={showPhoneMenu} />
-      {/* )} */}
+      <Header title="Brands" />
+      {!showEditMenu && <AddBtn setShowEditMenu={setShowEditMenu} />}
       <div className="content">
         <div className="list_item">
-          {sponsors.map((item, index) => (
+          {Brands.map((item, index) => (
             <div className="item_card" key={index}>
               <div className="item_name">{item.name}</div>
               <div className="tools">
                 <div className="item_preview">
-                  <a
-                    href="https://res.cloudinary.com/dzsocqtuc/image/upload/v1673344719/logos/Screenshot_from_2023-01-10_15-22-15-removebg-preview_rtctar.png"
-                    target="_blank"
-                  >
+                  <a href="" target="_blank">
                     Preview
                   </a>
                 </div>
                 <div className="item_edit">
                   <BiEdit
                     onClick={() => {
-                      showPhoneMenu();
+                      setShowEditMenu(true);
                       setIsUpdating(true);
                       setSelected(index);
                       setTimeout(() => {
@@ -157,7 +139,7 @@ const SponsorPage = ({ toastOptions, toast }) => {
                 <div className="item_delete">
                   <MdDelete
                     onClick={() => {
-                      deleteSponsor(item.id);
+                      deleteBrand(item.id);
                     }}
                   />
                 </div>
@@ -167,84 +149,104 @@ const SponsorPage = ({ toastOptions, toast }) => {
         </div>
 
         <div
-          className={phoneMenu ? "edit_menu edit_menu_active" : "edit_menu"}
+          className={showEditMenu ? "edit_menu edit_menu_active" : "edit_menu"}
           style={{
             display: !isUpdating ? "" : "none",
           }}
           id="add"
         >
           <div className="edit_menu_title">
-            <p>Add Sponsor</p>
+            <p>Add Brand</p>
           </div>
-          <form onSubmit={addSponsor}>
+          <form onSubmit={addBrand}>
             <div className="inputs">
-              <label>Sponsor name</label>
+              <label>Brand name</label>
               <input type="text" name="name" />
             </div>
             <div className="inputs">
-              <label>Sponsor Logo</label>
+              <label>Brand Logo</label>
               <label htmlFor="image" className="upload_btn">
                 Browse
                 <input type="file" id="image" name="image" />
               </label>
             </div>
             <div className="inputs">
-              <label>Sponsor Info</label>
+              <label>Brand Info</label>
               <input type="text" name="details" />
             </div>
             <div className="inputs">
-              <label>Sponsor Link</label>
+              <label>Brand Link</label>
               <input type="text" name="link" />
             </div>
             <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
               <button type="submit">Add</button>
-              {phoneMenu && <button onClick={ShowEditMenu}>Close</button>}
+              {showEditMenu && (
+                <button
+                  onClick={() => {
+                    setShowEditMenu(false);
+                    setIsUpdating(false);
+                  }}
+                >
+                  Close
+                </button>
+              )}
             </div>
           </form>
         </div>
 
         {isUpdating && (
           <div
-            className={phoneMenu ? "edit_menu edit_menu_active" : "edit_menu"}
+            className={
+              showEditMenu ? "edit_menu edit_menu_active" : "edit_menu"
+            }
           >
             <div className="edit_menu_title">
-              <p>Update Sponsor</p>
+              <p>Update Brand</p>
             </div>
-            <form id="update" onSubmit={editsponsors}>
+            <form id="update" onSubmit={editBrand}>
               <div className="inputs">
-                <label>Sponsor name</label>
+                <label>Brand name</label>
                 <input
                   type="text"
                   name="name"
-                  defaultValue={sponsors[selected].name}
+                  defaultValue={Brands[selected].name}
                 />
               </div>
               <div className="inputs">
-                <label>Sponsor Logo</label>
+                <label>Brand Logo</label>
                 <label htmlFor="image" className="upload_btn">
                   Browse
                   <input type="file" id="image" name="image" />
                 </label>
               </div>
               <div className="inputs">
-                <label>Sponsor Info</label>
+                <label>Brand Info</label>
                 <input
                   type="text"
                   name="details"
-                  defaultValue={sponsors[selected].details}
+                  defaultValue={Brands[selected].details}
                 />
               </div>
               <div className="inputs">
-                <label>Sponsor Link</label>
+                <label>Brand Link</label>
                 <input
                   type="text"
                   name="link"
-                  defaultValue={sponsors[selected].link}
+                  defaultValue={Brands[selected].link}
                 />
               </div>
               <div className="inputs">
                 <button type="submit">Update</button>
-                {phoneMenu && <button onClick={ShowEditMenu}>Close</button>}
+                {showEditMenu && (
+                  <button
+                    onClick={() => {
+                      setShowEditMenu(false);
+                      setIsUpdating(false);
+                    }}
+                  >
+                    Close
+                  </button>
+                )}
               </div>
             </form>
           </div>
@@ -254,4 +256,4 @@ const SponsorPage = ({ toastOptions, toast }) => {
   );
 };
 
-export default SponsorPage;
+export default BrandsPage;

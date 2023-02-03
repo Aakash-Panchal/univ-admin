@@ -12,10 +12,11 @@ import Loader from "./Components/Loader";
 import "./App.scss";
 import axios from "axios";
 import { BaseUrl } from "./BaseUrl";
+import BrandsPage from "./Components/Pages/BrandsPage";
 
 function App() {
-  const [isLoggedIn, setLogggedIn] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setLogggedIn] = useState(true);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const toastOptions = {
@@ -26,6 +27,7 @@ function App() {
   };
 
   const verify = () => {
+    setLoading(true);
     axios({
       method: "GET",
       url: BaseUrl + "admin/verify",
@@ -36,11 +38,10 @@ function App() {
     })
       .then((response) => {
         setLogggedIn(true);
-        navigate("/");
+        setLoading(false);
       })
       .catch((response) => {
-        // setLoading(false);
-        navigate("/");
+        setLoading(false);
       });
   };
 
@@ -51,6 +52,7 @@ function App() {
   return (
     <>
       <ToastContainer />
+      {loading && <Loader isLoggedIn={isLoggedIn} loading={loading} />}
       {!isLoggedIn ? (
         <>
           <Login toastOptions={toastOptions} toast={toast} verify={verify} />
@@ -63,7 +65,6 @@ function App() {
             verify={verify}
             setLogggedIn={setLogggedIn}
           />
-          {/* <Loader loading={loading} /> */}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route
@@ -71,6 +72,10 @@ function App() {
               element={
                 <SponsorPage toastOptions={toastOptions} toast={toast} />
               }
+            />
+            <Route
+              path="/brands"
+              element={<BrandsPage toastOptions={toastOptions} toast={toast} />}
             />
             <Route
               path="/team"

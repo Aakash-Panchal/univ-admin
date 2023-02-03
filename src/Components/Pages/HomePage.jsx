@@ -4,7 +4,7 @@ import Header from "../Header";
 const HomePage = () => {
   return (
     <div className="container">
-      <Header title="Home Page" />
+      <Header title="Dashboard" />
       <div className="cardsHolder">
         <div className="card"></div>
       </div>

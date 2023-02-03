@@ -40,6 +40,10 @@ const Sidebar = ({ verify, setLogggedIn, toastOptions, toast }) => {
             <BiBadgeCheck />
             <p>Sponsor</p>
           </NavLink>
+          <NavLink to="/brands">
+            <BiBadgeCheck />
+            <p>Brands</p>
+          </NavLink>
           <NavLink to="/expertise">
             <AiOutlineTeam />
             <p>Expertise</p>

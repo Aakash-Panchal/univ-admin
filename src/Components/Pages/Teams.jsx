@@ -4,21 +4,24 @@ import { BiEdit } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import { BaseUrl } from "../../BaseUrl";
+import Loader from "../Loader";
 
 const Teams = ({ toastOptions, toast }) => {
+  const [loading, setLoading] = useState(false);
   const [team, setTeam] = useState([]);
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
 
   const getTeams = () => {
+    setLoading(true);
     axios({
       method: "GET",
       url: BaseUrl + "team",
     }).then((response) => {
       setTeam(response.data);
+      setLoading(false);
     });
-    console.log(team);
   };
 
   useEffect(() => {
@@ -27,6 +30,9 @@ const Teams = ({ toastOptions, toast }) => {
 
   const addMember = (e) => {
     e.preventDefault();
+
+    setLoading(true);
+
     let formData = new FormData(e.target);
 
     axios({
@@ -34,16 +40,20 @@ const Teams = ({ toastOptions, toast }) => {
       data: formData,
       url: BaseUrl + "team",
       headers: {
-        username: "kushal",
-        password: "123",
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
       },
     })
       .then((response) => {
         getTeams();
         toast.success("Done", toastOptions);
         document.getElementById("add").reset();
+        setLoading(false);
       })
-      .catch((response) => {});
+      .catch((response) => {
+        setLoading(false);
+        toast.success(response.data, toastOptions);
+      });
   };
 
   const editMember = (e, id) => {
@@ -57,6 +67,10 @@ const Teams = ({ toastOptions, toast }) => {
       params: {
         id: id,
       },
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
     })
       .then((response) => {
         setIsUpdating(false);
@@ -65,12 +79,38 @@ const Teams = ({ toastOptions, toast }) => {
       .catch((response) => {});
   };
 
+  const deleteSponsor = (id) => {
+    setLoading(true);
+
+    axios({
+      method: "DELETE",
+      url: BaseUrl + `team`,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
+      params: {
+        id: id,
+      },
+    })
+      .then((response) => {
+        getTeams();
+        setLoading(false);
+        toast.success("Deleted", toastOptions);
+      })
+      .catch((response) => {
+        setLoading(false);
+        console.log(response);
+      });
+  };
+
   const ShowEditMenu = () => {
     showEditMenu ? setShowEditMenu(false) : setShowEditMenu(true);
   };
 
   return (
     <div className="container">
+      <Loader loading={loading} />
       <Header title="Team" />
       <div className="content">
         <div className="list_item">
@@ -92,14 +132,18 @@ const Teams = ({ toastOptions, toast }) => {
                       ShowEditMenu();
                       setIsUpdating(true);
                       setSelected(index);
-                      // setTimeout(() => {
-                      //   document.getElementById("update").reset();
-                      // }, 800);
+                      setTimeout(() => {
+                        document.getElementById("update").reset();
+                      }, 800);
                     }}
                   />
                 </div>
                 <div className="item_delete">
-                  <MdDelete />
+                  <MdDelete
+                    onClick={() => {
+                      deleteSponsor(item.id);
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -150,7 +194,7 @@ const Teams = ({ toastOptions, toast }) => {
             <div className="edit_menu_title">
               <p>Update Sponsor</p>
             </div>
-            <form id="update" onSubmit={editMember({ id: team[selected].id })}>
+            <form id="update" onSubmit={editMember}>
               <div className="inputs">
                 <label>Name</label>
                 <input
