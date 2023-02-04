@@ -15,7 +15,7 @@ import { BaseUrl } from "./BaseUrl";
 import BrandsPage from "./Components/Pages/BrandsPage";
 
 function App() {
-  const [isLoggedIn, setLogggedIn] = useState(true);
+  const [isLoggedIn, setLogggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
