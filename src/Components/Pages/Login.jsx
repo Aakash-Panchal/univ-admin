@@ -34,12 +34,15 @@ const Login = ({ verify, toastOptions, toast }) => {
       url: BaseUrl + "admin/login",
     })
       .then((response) => {
-        toast.success("Done", toastOptions);
+        console.log(response);
+        toast.success("Login Success", toastOptions);
         localStorage.setItem("Univ-Admin-username", values.userName);
         localStorage.setItem("Univ-Admin-password", values.password);
         verify();
       })
-      .catch((response) => {});
+      .catch((response) => {
+        toast.error(response.response.data.message, toastOptions);
+      });
   };
 
   return (

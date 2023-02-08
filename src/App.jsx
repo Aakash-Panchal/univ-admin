@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Sidebar from "./Components/Sidebar";
 import HomePage from "./Components/Pages/HomePage";
-import SponsorPage from "./Components/Pages/SponsorPage";
+import ClientsPage from "./Components/Pages/ClientsPage";
 import Teams from "./Components/Pages/Teams";
 import Login from "./Components/Pages/Login";
 import { ToastContainer, toast } from "react-toastify";
@@ -68,18 +68,14 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route
-              path="/sponsor"
+              path="/clients"
               element={
-                <SponsorPage toastOptions={toastOptions} toast={toast} />
+                <ClientsPage toastOptions={toastOptions} toast={toast} />
               }
             />
             <Route
               path="/brands"
               element={<BrandsPage toastOptions={toastOptions} toast={toast} />}
-            />
-            <Route
-              path="/team"
-              element={<Teams toastOptions={toastOptions} toast={toast} />}
             />
             <Route path="/expertise" element={<ExpertisePage />} />
           </Routes>

@@ -1,2 +1,1 @@
-export const BaseUrl =
-  "https://univ-backend-test-production.up.railway.app/api/v1/";
+export const BaseUrl = "https://api.univsportatech.in/api/v1/";

@@ -1,8 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { BiEdit } from "react-icons/bi";
+import { MdDelete } from "react-icons/md";
 import { BaseUrl } from "../../BaseUrl";
 import AddBtn from "../AddBtn";
 import Header from "../Header";
+import Loader from "../Loader";
 
 const ExpertisePage = ({ toast, toastOptions }) => {
   const [loading, setLoading] = useState(true);
@@ -27,14 +31,93 @@ const ExpertisePage = ({ toast, toastOptions }) => {
 
   const addExpertise = (e) => {
     e.preventDefault();
+    setLoading(true);
+    let formData = new FormData(e.target);
+
+    axios({
+      method: "POST",
+      data: formData,
+      url: BaseUrl + "expertise",
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
+    })
+      .then((response) => {
+        getExpertise();
+        setLoading(false);
+        toast.success("expertise Added", toastOptions);
+        document.getElementById("add").reset();
+      })
+      .catch((response) => {
+        setLoading(false);
+      });
   };
 
-  const editExpertise = () => {};
+  const editExpertise = () => {
+    e.preventDefault();
+    setLoading(true);
+    const id = sponsors[selected].id;
+    let formData = new FormData(e.target);
 
-  const deleteExpertise = () => {};
+    if (formData.get("image").size === 0) {
+      formData.delete("image");
+    }
+
+    axios({
+      method: "PUT",
+      data: formData,
+      url: BaseUrl + `expertise`,
+      params: {
+        id: id,
+      },
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
+    })
+      .then((response) => {
+        setIsUpdating(false);
+        setShowEditMenu(false);
+        getExpertise();
+        setLoading(false);
+        toast.success("Expertise Updated", toastOptions);
+      })
+      .catch((response) => {
+        setLoading(false);
+      });
+  };
+
+  const deleteExpertise = (id) => {
+    setLoading(true);
+
+    axios({
+      method: "DELETE",
+      url: BaseUrl + `expertise`,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
+      params: {
+        id: id,
+      },
+    })
+      .then((response) => {
+        getExpertise();
+        setLoading(false);
+        toast.success("Expertise Deleted", toastOptions);
+      })
+      .catch((response) => {
+        setLoading(false);
+      });
+  };
 
   return (
     <div className="container">
+      <Helmet>
+        <title>Univ | Admin Panel | Expertise</title>
+      </Helmet>
+      <Loader loading={loading} />
       <Header title="Expertise" />
       {!showEditMenu && <AddBtn setShowEditMenu={setShowEditMenu} />}
       <div className="content">
@@ -63,7 +146,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
                 <div className="item_delete">
                   <MdDelete
                     onClick={() => {
-                      deleteBrand(item.id);
+                      deleteExpertise(item.id);
                     }}
                   />
                 </div>
@@ -85,22 +168,22 @@ const ExpertisePage = ({ toast, toastOptions }) => {
           <form onSubmit={addExpertise}>
             <div className="inputs">
               <label>Expertise name</label>
-              <input type="text" name="name" />
+              <input required type="text" name="name" />
             </div>
             <div className="inputs">
               <label>Expertise Background</label>
               <label htmlFor="image" className="upload_btn">
                 Browse
-                <input type="file" id="image" name="bg" />
+                <input required type="file" id="image" name="bg" />
               </label>
             </div>
             <div className="inputs">
               <label>Expertise Info</label>
-              <input type="text" name="info" />
+              <input required type="text" name="info" />
             </div>
             <div className="inputs">
               <label>Expertise Url* (Must be uniqe)</label>
-              <input type="text" name="url" />
+              <input required type="text" name="url" />
             </div>
             <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
               <button type="submit">Add</button>

@@ -6,31 +6,32 @@ import axios from "axios";
 import Loader from "../Loader";
 import { BaseUrl } from "../../BaseUrl";
 import AddBtn from "../AddBtn";
+import { Helmet } from "react-helmet";
 
-const SponsorPage = ({ toastOptions, toast }) => {
+const ClientsPage = ({ toastOptions, toast }) => {
   const [loading, setLoading] = useState(true);
-  const [sponsors, setSponsors] = useState([]);
+  const [clients, setClients] = useState([]);
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
 
   const [phoneMenu, setPhoneMenu] = useState(false);
 
-  const getSponsor = () => {
+  const getClients = () => {
     axios({
       method: "GET",
-      url: BaseUrl + "sponsor",
+      url: BaseUrl + "client",
     }).then((response) => {
-      setSponsors(response.data);
+      setClients(response.data);
       setLoading(false);
     });
   };
 
   useEffect(() => {
-    getSponsor();
+    getClients();
   }, []);
 
-  const addSponsor = (e) => {
+  const addClient = (e) => {
     e.preventDefault();
     setLoading(true);
     let formData = new FormData(e.target);
@@ -38,16 +39,16 @@ const SponsorPage = ({ toastOptions, toast }) => {
     axios({
       method: "POST",
       data: formData,
-      url: BaseUrl + "sponsor",
+      url: BaseUrl + "client",
       headers: {
         username: localStorage.getItem("Univ-Admin-username"),
         password: localStorage.getItem("Univ-Admin-password"),
       },
     })
       .then((response) => {
-        getSponsor();
+        getClients();
         setLoading(false);
-        toast.success("Sponsor Added", toastOptions);
+        toast.success("client Added", toastOptions);
         document.getElementById("add").reset();
       })
       .catch((response) => {
@@ -55,10 +56,10 @@ const SponsorPage = ({ toastOptions, toast }) => {
       });
   };
 
-  const editsponsors = (e) => {
+  const editclients = (e) => {
     e.preventDefault();
     setLoading(true);
-    const id = sponsors[selected].id;
+    const id = clients[selected].id;
     let formData = new FormData(e.target);
 
     if (formData.get("image").size === 0) {
@@ -68,7 +69,7 @@ const SponsorPage = ({ toastOptions, toast }) => {
     axios({
       method: "PUT",
       data: formData,
-      url: BaseUrl + `sponsor`,
+      url: BaseUrl + `client`,
       params: {
         id: id,
       },
@@ -80,21 +81,21 @@ const SponsorPage = ({ toastOptions, toast }) => {
       .then((response) => {
         setIsUpdating(false);
         setShowEditMenu(false);
-        getSponsor();
+        getClients();
         setLoading(false);
-        toast.success("Sponsor Updated", toastOptions);
+        toast.success("Client Updated", toastOptions);
       })
       .catch((response) => {
         setLoading(false);
       });
   };
 
-  const deleteSponsor = (id) => {
+  const deleteClient = (id) => {
     setLoading(true);
 
     axios({
       method: "DELETE",
-      url: BaseUrl + `sponsor`,
+      url: BaseUrl + `client`,
       headers: {
         username: localStorage.getItem("Univ-Admin-username"),
         password: localStorage.getItem("Univ-Admin-password"),
@@ -104,9 +105,9 @@ const SponsorPage = ({ toastOptions, toast }) => {
       },
     })
       .then((response) => {
-        getSponsor();
+        getClients();
         setLoading(false);
-        toast.success("Sponsor Deleted", toastOptions);
+        toast.success("Client Deleted", toastOptions);
       })
       .catch((response) => {
         setLoading(false);
@@ -123,14 +124,15 @@ const SponsorPage = ({ toastOptions, toast }) => {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>Univ | Admin Panel | Clients</title>
+      </Helmet>
       <Loader loading={loading} />
-      <Header title="Sponsors" />
-      {/* {isUpdating && ( */}
+      <Header title="clients" />
       <AddBtn showPhoneMenu={showPhoneMenu} />
-      {/* )} */}
       <div className="content">
         <div className="list_item">
-          {sponsors.map((item, index) => (
+          {clients.map((item, index) => (
             <div className="item_card" key={index}>
               <div className="item_name">{item.name}</div>
               <div className="tools">
@@ -157,7 +159,7 @@ const SponsorPage = ({ toastOptions, toast }) => {
                 <div className="item_delete">
                   <MdDelete
                     onClick={() => {
-                      deleteSponsor(item.id);
+                      deleteClient(item.id);
                     }}
                   />
                 </div>
@@ -174,26 +176,26 @@ const SponsorPage = ({ toastOptions, toast }) => {
           id="add"
         >
           <div className="edit_menu_title">
-            <p>Add Sponsor</p>
+            <p>Add Client</p>
           </div>
-          <form onSubmit={addSponsor}>
+          <form onSubmit={addClient}>
             <div className="inputs">
-              <label>Sponsor name</label>
+              <label>Client name</label>
               <input type="text" name="name" />
             </div>
             <div className="inputs">
-              <label>Sponsor Logo</label>
+              <label>Client Logo</label>
               <label htmlFor="image" className="upload_btn">
                 Browse
                 <input type="file" id="image" name="image" />
               </label>
             </div>
             <div className="inputs">
-              <label>Sponsor Info</label>
+              <label>Client Info</label>
               <input type="text" name="details" />
             </div>
             <div className="inputs">
-              <label>Sponsor Link</label>
+              <label>Client Link</label>
               <input type="text" name="link" />
             </div>
             <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
@@ -208,38 +210,38 @@ const SponsorPage = ({ toastOptions, toast }) => {
             className={phoneMenu ? "edit_menu edit_menu_active" : "edit_menu"}
           >
             <div className="edit_menu_title">
-              <p>Update Sponsor</p>
+              <p>Update Client</p>
             </div>
-            <form id="update" onSubmit={editsponsors}>
+            <form id="update" onSubmit={editclients}>
               <div className="inputs">
-                <label>Sponsor name</label>
+                <label>Client name</label>
                 <input
                   type="text"
                   name="name"
-                  defaultValue={sponsors[selected].name}
+                  defaultValue={clients[selected].name}
                 />
               </div>
               <div className="inputs">
-                <label>Sponsor Logo</label>
+                <label>Client Logo</label>
                 <label htmlFor="image" className="upload_btn">
                   Browse
                   <input type="file" id="image" name="image" />
                 </label>
               </div>
               <div className="inputs">
-                <label>Sponsor Info</label>
+                <label>Client Info</label>
                 <input
                   type="text"
                   name="details"
-                  defaultValue={sponsors[selected].details}
+                  defaultValue={clients[selected].details}
                 />
               </div>
               <div className="inputs">
-                <label>Sponsor Link</label>
+                <label>Client Link</label>
                 <input
                   type="text"
                   name="link"
-                  defaultValue={sponsors[selected].link}
+                  defaultValue={clients[selected].link}
                 />
               </div>
               <div className="inputs">
@@ -254,4 +256,4 @@ const SponsorPage = ({ toastOptions, toast }) => {
   );
 };
 
-export default SponsorPage;
+export default ClientsPage;

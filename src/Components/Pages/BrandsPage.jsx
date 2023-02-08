@@ -6,6 +6,7 @@ import axios from "axios";
 import Loader from "../Loader";
 import { BaseUrl } from "../../BaseUrl";
 import AddBtn from "../AddBtn";
+import { Helmet } from "react-helmet";
 
 const BrandsPage = ({ toast, toastOptions }) => {
   const [loading, setLoading] = useState(true);
@@ -110,6 +111,9 @@ const BrandsPage = ({ toast, toastOptions }) => {
 
   return (
     <div className="container">
+      <Helmet>
+        <title>Univ | Admin Panel | Brands</title>
+      </Helmet>
       <Loader loading={loading} />
       <Header title="Brands" />
       {!showEditMenu && <AddBtn setShowEditMenu={setShowEditMenu} />}

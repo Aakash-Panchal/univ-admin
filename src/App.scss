@@ -398,6 +398,22 @@ body {
       }
     }
   }
+
+  .cardsHolder {
+    padding: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    width: 100%;
+    justify-content: center;
+    .card {
+      width: 30rem;
+      height: 20rem;
+      border-radius: 8px;
+      background-color: red;
+    }
+  }
+
   @media (max-width: 1024px) {
     overflow: hidden;
     .content {
