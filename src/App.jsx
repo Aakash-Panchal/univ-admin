@@ -77,7 +77,12 @@ function App() {
               path="/brands"
               element={<BrandsPage toastOptions={toastOptions} toast={toast} />}
             />
-            <Route path="/expertise" element={<ExpertisePage />} />
+            <Route
+              path="/expertise"
+              element={
+                <ExpertisePage toastOptions={toastOptions} toast={toast} />
+              }
+            />
           </Routes>
         </div>
       )}

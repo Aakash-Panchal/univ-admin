@@ -46,11 +46,12 @@ const ExpertisePage = ({ toast, toastOptions }) => {
       .then((response) => {
         getExpertise();
         setLoading(false);
-        toast.success("expertise Added", toastOptions);
+        toast.success("Expertise Added", toastOptions);
         document.getElementById("add").reset();
       })
       .catch((response) => {
         setLoading(false);
+        toast.error("There was an error", toastOptions);
       });
   };
 
@@ -127,7 +128,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
               <div className="item_name">{item.name}</div>
               <div className="tools">
                 <div className="item_preview">
-                  <a href="" target="_blank">
+                  <a href={item.bg.name} target="_blank">
                     Preview
                   </a>
                 </div>
@@ -160,12 +161,11 @@ const ExpertisePage = ({ toast, toastOptions }) => {
           style={{
             display: !isUpdating ? "" : "none",
           }}
-          id="add"
         >
           <div className="edit_menu_title">
             <p>Add Expertise</p>
           </div>
-          <form onSubmit={addExpertise}>
+          <form onSubmit={addExpertise} id="add">
             <div className="inputs">
               <label>Expertise name</label>
               <input required type="text" name="name" />
