@@ -14,6 +14,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
+  const [phoneMenu, setPhoneMenu] = useState(false);
 
   const getExpertise = () => {
     axios({
@@ -113,6 +114,14 @@ const ExpertisePage = ({ toast, toastOptions }) => {
       });
   };
 
+  const ShowEditMenu = () => {
+    showEditMenu ? setShowEditMenu(false) : setShowEditMenu(true);
+  };
+
+  const showPhoneMenu = () => {
+    phoneMenu ? setPhoneMenu(false) : setPhoneMenu(true);
+  };
+
   return (
     <div className="container">
       <Helmet>
@@ -135,8 +144,8 @@ const ExpertisePage = ({ toast, toastOptions }) => {
                 <div className="item_edit">
                   <BiEdit
                     onClick={() => {
-                      setShowEditMenu(true);
-                      setIsUpdating(true);
+                      showPhoneMenu();
+                      ShowEditMenu();
                       setSelected(index);
                       setTimeout(() => {
                         document.getElementById("update").reset();
@@ -187,15 +196,10 @@ const ExpertisePage = ({ toast, toastOptions }) => {
             </div>
             <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
               <button type="submit">Add</button>
-              {showEditMenu && (
-                <button
-                  onClick={() => {
-                    setShowEditMenu(false);
-                    setIsUpdating(false);
-                  }}
-                >
+              {isUpdating && (
+                <div className="phoneBtn" onClick={ShowEditMenu}>
                   Close
-                </button>
+                </div>
               )}
             </div>
           </form>
@@ -203,9 +207,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
 
         {isUpdating && (
           <div
-            className={
-              showEditMenu ? "edit_menu edit_menu_active" : "edit_menu"
-            }
+            className={phoneMenu ? "edit_menu edit_menu_active" : "edit_menu"}
           >
             <div className="edit_menu_title">
               <p>Update Expertise</p>
@@ -244,18 +246,20 @@ const ExpertisePage = ({ toast, toastOptions }) => {
               </div>
               <div className="inputs">
                 <button type="submit">Update</button>
-                {showEditMenu && (
-                  <button
-                    onClick={() => {
-                      setShowEditMenu(false);
-                      setIsUpdating(false);
-                    }}
-                  >
-                    Close
-                  </button>
-                )}
               </div>
             </form>
+            {showEditMenu && (
+              <button
+                className="phoneBtn"
+                onClick={() => {
+                  ShowEditMenu();
+                  setIsUpdating(false);
+                  showPhoneMenu();
+                }}
+              >
+                Close
+              </button>
+            )}
           </div>
         )}
       </div>

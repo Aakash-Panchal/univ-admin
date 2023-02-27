@@ -13,8 +13,8 @@ const ClientsPage = ({ toastOptions, toast }) => {
   const [clients, setClients] = useState([]);
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [showEditMenu, setShowEditMenu] = useState(false);
 
+  const [showEditMenu, setShowEditMenu] = useState(false);
   const [phoneMenu, setPhoneMenu] = useState(false);
 
   const getClients = () => {
@@ -129,7 +129,7 @@ const ClientsPage = ({ toastOptions, toast }) => {
       </Helmet>
       <Loader loading={loading} />
       <Header title="clients" />
-      <AddBtn showPhoneMenu={showPhoneMenu} />
+      <AddBtn setShowEditMenu={setShowEditMenu} />
       <div className="content">
         <div className="list_item">
           {clients.map((item, index) => (
@@ -148,6 +148,7 @@ const ClientsPage = ({ toastOptions, toast }) => {
                   <BiEdit
                     onClick={() => {
                       showPhoneMenu();
+                      ShowEditMenu();
                       setIsUpdating(true);
                       setSelected(index);
                       setTimeout(() => {
@@ -169,7 +170,7 @@ const ClientsPage = ({ toastOptions, toast }) => {
         </div>
 
         <div
-          className={phoneMenu ? "edit_menu edit_menu_active" : "edit_menu"}
+          className={showEditMenu ? "edit_menu edit_menu_active" : "edit_menu"}
           style={{
             display: !isUpdating ? "" : "none",
           }}
@@ -200,7 +201,11 @@ const ClientsPage = ({ toastOptions, toast }) => {
             </div>
             <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
               <button type="submit">Add</button>
-              {phoneMenu && <button onClick={ShowEditMenu}>Close</button>}
+              {showEditMenu && (
+                <div className="phoneBtn" onClick={ShowEditMenu}>
+                  Close
+                </div>
+              )}
             </div>
           </form>
         </div>
@@ -246,9 +251,20 @@ const ClientsPage = ({ toastOptions, toast }) => {
               </div>
               <div className="inputs">
                 <button type="submit">Update</button>
-                {phoneMenu && <button onClick={ShowEditMenu}>Close</button>}
               </div>
             </form>
+            {isUpdating && (
+              <button
+                className="phoneBtn"
+                onClick={() => {
+                  ShowEditMenu();
+                  setIsUpdating(false);
+                  showPhoneMenu();
+                }}
+              >
+                Close
+              </button>
+            )}
           </div>
         )}
       </div>
