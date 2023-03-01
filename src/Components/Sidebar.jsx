@@ -40,18 +40,18 @@ const Sidebar = ({ verify, setLogggedIn, toastOptions, toast }) => {
             <BiBadgeCheck />
             <p>Clients</p>
           </NavLink>
-          <NavLink to="/brands">
+          {/* <NavLink to="/brands">
             <BiBadgeCheck />
             <p>Brands</p>
-          </NavLink>
+          </NavLink> */}
           <NavLink to="/expertise">
             <AiOutlineTeam />
             <p>Expertise</p>
           </NavLink>
-          {/* <NavLink to="/team">
+          <NavLink to="/team">
             <AiOutlineTeam />
             <p>Teams</p>
-          </NavLink> */}
+          </NavLink>
         </div>
         <div className="logout_btn" onClick={logOut}>
           <RxExit /> <p>Logout</p>

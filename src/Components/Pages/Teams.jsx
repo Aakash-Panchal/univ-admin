@@ -6,7 +6,7 @@ import axios from "axios";
 import { BaseUrl } from "../../BaseUrl";
 import Loader from "../Loader";
 
-const Teams = ({ toastOptions, toast }) => {
+const Teams = ({ toastOptions, toast, admin }) => {
   const [loading, setLoading] = useState(false);
   const [team, setTeam] = useState([]);
   const [selected, setSelected] = useState(0);
@@ -39,10 +39,7 @@ const Teams = ({ toastOptions, toast }) => {
       method: "POST",
       data: formData,
       url: BaseUrl + "team",
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
     })
       .then((response) => {
         getTeams();
@@ -67,10 +64,7 @@ const Teams = ({ toastOptions, toast }) => {
       params: {
         id: id,
       },
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
     })
       .then((response) => {
         setIsUpdating(false);
@@ -85,10 +79,7 @@ const Teams = ({ toastOptions, toast }) => {
     axios({
       method: "DELETE",
       url: BaseUrl + `team`,
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
       params: {
         id: id,
       },
