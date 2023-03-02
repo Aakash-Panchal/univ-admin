@@ -5,6 +5,7 @@ import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import { BaseUrl } from "../../BaseUrl";
 import Loader from "../Loader";
+import AddBtn from "../AddBtn";
 
 const Teams = ({ toastOptions, toast }) => {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,12 @@ const Teams = ({ toastOptions, toast }) => {
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
+  const [phoneMenu, setPhoneMenu] = useState(false);
+
+  const admin = {
+    username: localStorage.getItem("Univ-Admin-username"),
+    password: localStorage.getItem("Univ-Admin-password"),
+  };
 
   const getTeams = () => {
     setLoading(true);
@@ -30,19 +37,13 @@ const Teams = ({ toastOptions, toast }) => {
 
   const addMember = (e) => {
     e.preventDefault();
-
     setLoading(true);
-
     let formData = new FormData(e.target);
-
     axios({
       method: "POST",
       data: formData,
       url: BaseUrl + "team",
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
     })
       .then((response) => {
         getTeams();
@@ -56,10 +57,13 @@ const Teams = ({ toastOptions, toast }) => {
       });
   };
 
-  const editMember = (e, id) => {
+  const editMember = (e) => {
     e.preventDefault();
+    const id = team[selected].id;
     let formData = new FormData(e.target);
-
+    if (formData.get("image").size === 0) {
+      formData.delete("image");
+    }
     axios({
       method: "PUT",
       data: formData,
@@ -67,28 +71,24 @@ const Teams = ({ toastOptions, toast }) => {
       params: {
         id: id,
       },
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
     })
       .then((response) => {
+        toast.success("Done", toastOptions);
         setIsUpdating(false);
         getTeams();
       })
-      .catch((response) => {});
+      .catch((response) => {
+        toast.error("There was an error", toastOptions);
+      });
   };
 
-  const deleteSponsor = (id) => {
+  const deleteMember = (id) => {
     setLoading(true);
-
     axios({
       method: "DELETE",
       url: BaseUrl + `team`,
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
       params: {
         id: id,
       },
@@ -100,18 +100,21 @@ const Teams = ({ toastOptions, toast }) => {
       })
       .catch((response) => {
         setLoading(false);
-        console.log(response);
       });
   };
-
   const ShowEditMenu = () => {
     showEditMenu ? setShowEditMenu(false) : setShowEditMenu(true);
+  };
+
+  const showPhoneMenu = () => {
+    phoneMenu ? setPhoneMenu(false) : setPhoneMenu(true);
   };
 
   return (
     <div className="container">
       <Loader loading={loading} />
       <Header title="Team" />
+      <AddBtn setShowEditMenu={setShowEditMenu} />
       <div className="content">
         <div className="list_item">
           {team.map((item, index) => (
@@ -129,6 +132,7 @@ const Teams = ({ toastOptions, toast }) => {
                 <div className="item_edit">
                   <BiEdit
                     onClick={() => {
+                      showPhoneMenu();
                       ShowEditMenu();
                       setIsUpdating(true);
                       setSelected(index);
@@ -141,7 +145,7 @@ const Teams = ({ toastOptions, toast }) => {
                 <div className="item_delete">
                   <MdDelete
                     onClick={() => {
-                      deleteSponsor(item.id);
+                      deleteMember(item.id);
                     }}
                   />
                 </div>
@@ -184,15 +188,21 @@ const Teams = ({ toastOptions, toast }) => {
             </div>
             <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
               <button type="submit">Add</button>
-              {showEditMenu && <button onClick={ShowEditMenu}>Close</button>}
+              {showEditMenu && (
+                <div className="phoneBtn" onClick={ShowEditMenu}>
+                  Close
+                </div>
+              )}
             </div>
           </form>
         </div>
 
         {isUpdating && (
-          <div className="edit_menu">
+          <div
+            className={phoneMenu ? "edit_menu edit_menu_active" : "edit_menu"}
+          >
             <div className="edit_menu_title">
-              <p>Update Sponsor</p>
+              <p>Update Member</p>
             </div>
             <form id="update" onSubmit={editMember}>
               <div className="inputs">
@@ -238,6 +248,18 @@ const Teams = ({ toastOptions, toast }) => {
                 <button type="submit">Update</button>
               </div>
             </form>
+            {isUpdating && (
+              <button
+                className="phoneBtn"
+                onClick={() => {
+                  ShowEditMenu();
+                  setIsUpdating(false);
+                  showPhoneMenu();
+                }}
+              >
+                Close
+              </button>
+            )}
           </div>
         )}
       </div>

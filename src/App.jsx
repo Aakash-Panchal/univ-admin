@@ -83,6 +83,10 @@ function App() {
                 <ExpertisePage toastOptions={toastOptions} toast={toast} />
               }
             />
+            <Route
+              path="/team"
+              element={<Teams toastOptions={toastOptions} toast={toast} />}
+            />
           </Routes>
         </div>
       )}
