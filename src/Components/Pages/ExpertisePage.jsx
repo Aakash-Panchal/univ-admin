@@ -8,7 +8,7 @@ import AddBtn from "../AddBtn";
 import Header from "../Header";
 import Loader from "../Loader";
 
-const ExpertisePage = ({ toast, toastOptions, admin }) => {
+const ExpertisePage = ({ toast, toastOptions }) => {
   const [loading, setLoading] = useState(true);
   const [Expertise, setExpertise] = useState([]);
   const [selected, setSelected] = useState(0);
@@ -39,7 +39,10 @@ const ExpertisePage = ({ toast, toastOptions, admin }) => {
       method: "POST",
       data: formData,
       url: BaseUrl + "expertise",
-      headers: admin,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
     })
       .then((response) => {
         getExpertise();
@@ -70,7 +73,10 @@ const ExpertisePage = ({ toast, toastOptions, admin }) => {
       params: {
         id: id,
       },
-      headers: admin,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
     })
       .then((response) => {
         setIsUpdating(false);
@@ -90,7 +96,10 @@ const ExpertisePage = ({ toast, toastOptions, admin }) => {
     axios({
       method: "DELETE",
       url: BaseUrl + `expertise`,
-      headers: admin,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
       params: {
         id: id,
       },

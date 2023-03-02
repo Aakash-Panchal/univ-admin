@@ -8,11 +8,12 @@ import { BaseUrl } from "../../BaseUrl";
 import AddBtn from "../AddBtn";
 import { Helmet } from "react-helmet";
 
-const ClientsPage = ({ toastOptions, toast, admin }) => {
+const ClientsPage = ({ toastOptions, toast }) => {
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState([]);
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
+
   const [showEditMenu, setShowEditMenu] = useState(false);
   const [phoneMenu, setPhoneMenu] = useState(false);
 
@@ -39,7 +40,10 @@ const ClientsPage = ({ toastOptions, toast, admin }) => {
       method: "POST",
       data: formData,
       url: BaseUrl + "client",
-      headers: admin,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
     })
       .then((response) => {
         getClients();
@@ -69,7 +73,10 @@ const ClientsPage = ({ toastOptions, toast, admin }) => {
       params: {
         id: id,
       },
-      headers: admin,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
     })
       .then((response) => {
         setIsUpdating(false);
@@ -89,7 +96,10 @@ const ClientsPage = ({ toastOptions, toast, admin }) => {
     axios({
       method: "DELETE",
       url: BaseUrl + `client`,
-      headers: admin,
+      headers: {
+        username: localStorage.getItem("Univ-Admin-username"),
+        password: localStorage.getItem("Univ-Admin-password"),
+      },
       params: {
         id: id,
       },
