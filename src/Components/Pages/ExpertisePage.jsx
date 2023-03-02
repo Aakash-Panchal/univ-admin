@@ -13,8 +13,12 @@ const ExpertisePage = ({ toast, toastOptions }) => {
   const [Expertise, setExpertise] = useState([]);
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [showEditMenu, setShowEditMenu] = useState(false);
   const [phoneMenu, setPhoneMenu] = useState(false);
+
+  const admin = {
+    username: localStorage.getItem("Univ-Admin-username"),
+    password: localStorage.getItem("Univ-Admin-password"),
+  };
 
   const getExpertise = () => {
     axios({
@@ -39,10 +43,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
       method: "POST",
       data: formData,
       url: BaseUrl + "expertise",
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
     })
       .then((response) => {
         getExpertise();
@@ -61,11 +62,9 @@ const ExpertisePage = ({ toast, toastOptions }) => {
     setLoading(true);
     const id = sponsors[selected].id;
     let formData = new FormData(e.target);
-
     if (formData.get("image").size === 0) {
       formData.delete("image");
     }
-
     axios({
       method: "PUT",
       data: formData,
@@ -73,14 +72,11 @@ const ExpertisePage = ({ toast, toastOptions }) => {
       params: {
         id: id,
       },
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
     })
       .then((response) => {
         setIsUpdating(false);
-        setShowEditMenu(false);
+        showPhoneMenu();
         getExpertise();
         setLoading(false);
         toast.success("Expertise Updated", toastOptions);
@@ -96,10 +92,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
     axios({
       method: "DELETE",
       url: BaseUrl + `expertise`,
-      headers: {
-        username: localStorage.getItem("Univ-Admin-username"),
-        password: localStorage.getItem("Univ-Admin-password"),
-      },
+      headers: admin,
       params: {
         id: id,
       },
@@ -114,10 +107,6 @@ const ExpertisePage = ({ toast, toastOptions }) => {
       });
   };
 
-  const ShowEditMenu = () => {
-    showEditMenu ? setShowEditMenu(false) : setShowEditMenu(true);
-  };
-
   const showPhoneMenu = () => {
     phoneMenu ? setPhoneMenu(false) : setPhoneMenu(true);
   };
@@ -129,7 +118,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
       </Helmet>
       <Loader loading={loading} />
       <Header title="Expertise" />
-      {!showEditMenu && <AddBtn setShowEditMenu={setShowEditMenu} />}
+      {!isUpdating && <AddBtn showPhoneMenu={showPhoneMenu} />}
       <div className="content">
         <div className="list_item">
           {Expertise.map((item, index) => (
@@ -145,7 +134,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
                   <BiEdit
                     onClick={() => {
                       showPhoneMenu();
-                      ShowEditMenu();
+                      setIsUpdating(true);
                       setSelected(index);
                       setTimeout(() => {
                         document.getElementById("update").reset();
@@ -166,7 +155,7 @@ const ExpertisePage = ({ toast, toastOptions }) => {
         </div>
 
         <div
-          className={showEditMenu ? "edit_menu edit_menu_active" : "edit_menu"}
+          className={phoneMenu ? "edit_menu edit_menu_active" : "edit_menu"}
           style={{
             display: !isUpdating ? "" : "none",
           }}
@@ -194,13 +183,8 @@ const ExpertisePage = ({ toast, toastOptions }) => {
               <label>Expertise Url* (Must be uniqe)</label>
               <input required type="text" name="url" />
             </div>
-            <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
+            <div className="inputs">
               <button type="submit">Add</button>
-              {isUpdating && (
-                <div className="phoneBtn" onClick={ShowEditMenu}>
-                  Close
-                </div>
-              )}
             </div>
           </form>
         </div>
@@ -248,11 +232,10 @@ const ExpertisePage = ({ toast, toastOptions }) => {
                 <button type="submit">Update</button>
               </div>
             </form>
-            {showEditMenu && (
+            {isUpdating && (
               <button
                 className="phoneBtn"
                 onClick={() => {
-                  ShowEditMenu();
                   setIsUpdating(false);
                   showPhoneMenu();
                 }}

@@ -13,7 +13,6 @@ const ClientsPage = ({ toastOptions, toast }) => {
   const [clients, setClients] = useState([]);
   const [selected, setSelected] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [showEditMenu, setShowEditMenu] = useState(false);
   const [phoneMenu, setPhoneMenu] = useState(false);
 
   const admin = {
@@ -62,11 +61,9 @@ const ClientsPage = ({ toastOptions, toast }) => {
     setLoading(true);
     const id = clients[selected].id;
     let formData = new FormData(e.target);
-
     if (formData.get("image").size === 0) {
       formData.delete("image");
     }
-
     axios({
       method: "PUT",
       data: formData,
@@ -78,7 +75,7 @@ const ClientsPage = ({ toastOptions, toast }) => {
     })
       .then((response) => {
         setIsUpdating(false);
-        setShowEditMenu(false);
+        showPhoneMenu();
         getClients();
         setLoading(false);
         toast.success("Client Updated", toastOptions);
@@ -109,10 +106,6 @@ const ClientsPage = ({ toastOptions, toast }) => {
       });
   };
 
-  const ShowEditMenu = () => {
-    showEditMenu ? setShowEditMenu(false) : setShowEditMenu(true);
-  };
-
   const showPhoneMenu = () => {
     phoneMenu ? setPhoneMenu(false) : setPhoneMenu(true);
   };
@@ -124,7 +117,7 @@ const ClientsPage = ({ toastOptions, toast }) => {
       </Helmet>
       <Loader loading={loading} />
       <Header title="clients" />
-      <AddBtn setShowEditMenu={setShowEditMenu} />
+      {!isUpdating && <AddBtn showPhoneMenu={showPhoneMenu} />}
       <div className="content">
         <div className="list_item">
           {clients.map((item, index) => (
@@ -132,10 +125,7 @@ const ClientsPage = ({ toastOptions, toast }) => {
               <div className="item_name">{item.name}</div>
               <div className="tools">
                 <div className="item_preview">
-                  <a
-                    href="https://res.cloudinary.com/dzsocqtuc/image/upload/v1673344719/logos/Screenshot_from_2023-01-10_15-22-15-removebg-preview_rtctar.png"
-                    target="_blank"
-                  >
+                  <a href={item.image.url} target="_blank">
                     Preview
                   </a>
                 </div>
@@ -143,7 +133,6 @@ const ClientsPage = ({ toastOptions, toast }) => {
                   <BiEdit
                     onClick={() => {
                       showPhoneMenu();
-                      ShowEditMenu();
                       setIsUpdating(true);
                       setSelected(index);
                       setTimeout(() => {
@@ -165,7 +154,7 @@ const ClientsPage = ({ toastOptions, toast }) => {
         </div>
 
         <div
-          className={showEditMenu ? "edit_menu edit_menu_active" : "edit_menu"}
+          className={phoneMenu ? "edit_menu_active edit_menu" : "edit_menu"}
           style={{
             display: !isUpdating ? "" : "none",
           }}
@@ -194,20 +183,15 @@ const ClientsPage = ({ toastOptions, toast }) => {
               <label>Client Link</label>
               <input type="text" name="link" />
             </div>
-            <div className={showEditMenu ? "phone_btn_input " : "inputs"}>
+            <div className="inputs">
               <button type="submit">Add</button>
-              {showEditMenu && (
-                <div className="phoneBtn" onClick={ShowEditMenu}>
-                  Close
-                </div>
-              )}
             </div>
           </form>
         </div>
 
         {isUpdating && (
           <div
-            className={phoneMenu ? "edit_menu edit_menu_active" : "edit_menu"}
+            className={phoneMenu ? "edit_menu_active edit_menu" : "edit_menu"}
           >
             <div className="edit_menu_title">
               <p>Update Client</p>
@@ -252,7 +236,6 @@ const ClientsPage = ({ toastOptions, toast }) => {
               <button
                 className="phoneBtn"
                 onClick={() => {
-                  ShowEditMenu();
                   setIsUpdating(false);
                   showPhoneMenu();
                 }}

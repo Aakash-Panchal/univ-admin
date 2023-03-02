@@ -1,11 +1,11 @@
 import React from "react";
 
-const AddBtn = ({ setShowEditMenu }) => {
+const AddBtn = ({ showPhoneMenu }) => {
   return (
     <div className="Addbutton">
       <p
         onClick={() => {
-          setShowEditMenu(true);
+          showPhoneMenu();
         }}
       >
         +

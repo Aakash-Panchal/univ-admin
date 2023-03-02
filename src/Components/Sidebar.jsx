@@ -4,6 +4,7 @@ import logo from "../Univlogo.png";
 import { RxDoubleArrowLeft, RxExit, RxDoubleArrowRight } from "react-icons/rx";
 import { BiBadgeCheck } from "react-icons/bi";
 import { RiHome3Line } from "react-icons/ri";
+import { GrUserSettings } from "react-icons/gr";
 import { AiOutlineTeam } from "react-icons/ai";
 
 const Sidebar = ({ verify, setLogggedIn, toastOptions, toast }) => {
@@ -51,6 +52,10 @@ const Sidebar = ({ verify, setLogggedIn, toastOptions, toast }) => {
           <NavLink to="/team">
             <AiOutlineTeam />
             <p>Teams</p>
+          </NavLink>
+          <NavLink to="/update_admin">
+            <GrUserSettings />
+            <p>Update Admin</p>
           </NavLink>
         </div>
         <div className="logout_btn" onClick={logOut}>

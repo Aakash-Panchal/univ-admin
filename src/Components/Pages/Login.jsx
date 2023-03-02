@@ -34,7 +34,6 @@ const Login = ({ verify, toastOptions, toast }) => {
       url: BaseUrl + "admin/login",
     })
       .then((response) => {
-        console.log(response);
         toast.success("Login Success", toastOptions);
         localStorage.setItem("Univ-Admin-username", values.userName);
         localStorage.setItem("Univ-Admin-password", values.password);

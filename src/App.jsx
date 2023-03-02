@@ -13,6 +13,7 @@ import "./App.scss";
 import axios from "axios";
 import { BaseUrl } from "./BaseUrl";
 import BrandsPage from "./Components/Pages/BrandsPage";
+import { UpdateAdmin } from "./Components/Pages/UpdateAdmin";
 
 function App() {
   const [isLoggedIn, setLogggedIn] = useState(false);
@@ -86,6 +87,12 @@ function App() {
             <Route
               path="/team"
               element={<Teams toastOptions={toastOptions} toast={toast} />}
+            />
+            <Route
+              path="/update_admin"
+              element={
+                <UpdateAdmin toastOptions={toastOptions} toast={toast} />
+              }
             />
           </Routes>
         </div>
